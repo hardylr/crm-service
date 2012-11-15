@@ -1,5 +1,7 @@
 package br.com.alexandre.crm.service;
 
+import java.util.Calendar;
+
 import javax.jws.WebService;
 
 import org.apache.log4j.Logger;
@@ -68,6 +70,10 @@ public class CustomerServiceImpl implements CustomerService {
 				customerType.setTelephone(customer.getTelephone());
 				customerType.setEmail(customer.getEmail());
 				customerType.setAddress(from(customer.getAddress()));
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(customer.getBirthday());
+				customerType.setBirthday(calendar);
 			}
 			
 			return customerType;
