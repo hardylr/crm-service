@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings 
+		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+    	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    	xmlns:annox="http://annox.dev.java.net"
+    	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb 
+    						http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd"
+    	version="2.1">
+    <jaxb:globalBindings>
+        <!-- Forca todas as classes implementarem Serializable -->
+        <xjc:serializable uid="1" />
+       
+        <!-- Utiliza java.util.Calendar ao inves de javax.xml.datetype.XMLGregorianCalendar -->
+        <jaxb:javaType 
+        			name="java.util.Calendar" 
+        			xmlType="xs:date"
+        			parseMethod="javax.xml.bind.DatatypeConverter.parseDate"
+        			printMethod="javax.xml.bind.DatatypeConverter.printDate" />
+       
+    </jaxb:globalBindings> 
+   
+   <!-- Anota com XmlRootElement -->
+   <jaxb:bindings schemaLocation="schema.xsd" node="/xs:schema">
+        <jaxb:bindings node="xs:complexType[@name='CustomerServiceRequestType']">
+            <annox:annotate>
+                <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="CustomerServiceRequest" />
+            </annox:annotate>
+        </jaxb:bindings>
+        
+        <jaxb:bindings node="xs:complexType[@name='CustomerServiceResponseType']">
+            <annox:annotate>
+                <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="CustomerServiceResponse" />
+            </annox:annotate>
+        </jaxb:bindings>
+    </jaxb:bindings>
+   
+</jaxb:bindings>

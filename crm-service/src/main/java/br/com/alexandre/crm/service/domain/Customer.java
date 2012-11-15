@@ -11,18 +11,24 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="Cliente")
+@NamedQueries(value={ @NamedQuery(name="Customer.findByCustomerId", query="Select c From Customer c Where c.customerId = :customerId")})
 public class Customer implements Serializable {
 
 	private static final long serialVersionUID = 3316785384710911206L;
 	
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
+	
+	@Column(name="customerId", length=14, nullable=false, unique=true)
+	private String customerId;
 	
 	@Column(name="name", length=100, nullable=false)
 	private String name;
@@ -50,6 +56,14 @@ public class Customer implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 
 	public String getName() {
@@ -104,7 +118,8 @@ public class Customer implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result
+				+ ((customerId == null) ? 0 : customerId.hashCode());
 		return result;
 	}
 
@@ -117,13 +132,15 @@ public class Customer implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Customer other = (Customer) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (customerId == null) {
+			if (other.customerId != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!customerId.equals(other.customerId))
 			return false;
 		return true;
 	}
+
+
 	
 	
 	

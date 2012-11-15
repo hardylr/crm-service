@@ -16,7 +16,7 @@
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
 	<!-- Endpoint -->
-	<jaxws:endpoint id="crmServiceEndpoint" implementor="#crmService" address="/CrmService">
+	<jaxws:endpoint id="customerServiceEndpoint" implementor="#customerService" address="/CustomerService">
 
 		<jaxws:inInterceptors>
 			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
@@ -28,8 +28,8 @@
 						<!-- Tipo de password texto puro -->
 						<entry key="passwordType" value="PasswordText" />
 						
-						<!-- Callback que verifica a senha -->
-						<entry key="passwordCallbackRef" value-ref="passwordCallback" />
+						<!-- Callback Handler que verifica a senha -->
+						<entry key="passwordCallbackRef" value-ref="passwordCallbackHandler" />
 					</map>
 				</constructor-arg>
 			</bean>

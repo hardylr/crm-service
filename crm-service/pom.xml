@@ -11,9 +11,10 @@
 	<properties>
 		<junit.version>4.8.2</junit.version>
 		<cxf.version>2.6.1</cxf.version>
+		<jaxws.version>2.2.8</jaxws.version>
+		<jaxb.version>2.2.6</jaxb.version>
 		<spring.version>3.1.1.RELEASE</spring.version>
 		<hibernate.version>4.0.1.Final</hibernate.version>
-		<jaxws.version>2.2.8</jaxws.version>
 		<c3p0.version>0.9.1.2</c3p0.version>
 		<aspectj.version>1.5.4</aspectj.version>
 		<postgresql.version>9.1-901.jdbc4</postgresql.version>
@@ -85,7 +86,7 @@
 			<name>JBoss Thirdparty Releases</name>
 			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
 		</repository>
-		
+
 	</repositories>
 
 
@@ -103,19 +104,18 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxws</artifactId>
 			<version>${cxf.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jaxb-impl</artifactId>
+					<groupId>com.sun.xml.bind</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Apache CXF Runtime Transports HTTP -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-transports-http</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-
-		<!-- Apache CXF Runtime Transports HTTP Jetty -->
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http-jetty</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
 
@@ -131,6 +131,12 @@
 			<groupId>javax.xml.ws</groupId>
 			<artifactId>jaxws-api</artifactId>
 			<version>${jaxws.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jaxb-api</artifactId>
+					<groupId>javax.xml.bind</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- PostgreSQL JDBC Driver -->
@@ -268,29 +274,28 @@
 			<version>1.6.4</version>
 		</dependency>
 
+		<!-- JAXB API -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
+
+		<!-- JAXB IMPL -->
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
+
 	</dependencies>
-	<build>
-		<finalName>crm-service</finalName>
-	</build>
 
 	<profiles>
 		<!-- Profile para execucao da aplicacao local -->
 		<profile>
 			<id>LOCAL</id>
 			<build>
-				<plugins>					
-					<!-- Plugin de compilacao para o Java 6 -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<version>2.4</version>
-						<configuration>
-							<compilerVersion>1.6</compilerVersion>
-							<source>1.6</source>
-							<target>1.6</target>
-						</configuration>
-					</plugin>
-
+				<plugins>
 					<!-- Plugin do Jetty -->
 					<plugin>
 						<groupId>org.mortbay.jetty</groupId>
@@ -313,5 +318,71 @@
 				</plugins>
 			</build>
 		</profile>
+
+		<!-- Profile de Geracao de classes Java JAXB a partir de XSD -->
+		<profile>
+			<id>JAXB</id>
+			<properties>
+				<jaxb2-basics.version>0.6.2</jaxb2-basics.version>
+			</properties>
+			<build>				
+				<plugins>
+					<!-- Plugin de geracao de JAXB a partir de XSD -->
+					<plugin>
+						<groupId>org.jvnet.jaxb2.maven2</groupId>
+						<artifactId>maven-jaxb2-plugin</artifactId>
+						<version>0.8.0</version>
+						<configuration>
+							<schemaDirectory>src/main/resources/xsd</schemaDirectory>
+							<bindingDirectory>src/main/resources/xsd</bindingDirectory>
+							<generatePackage>br.com.alexandre.crm.service.interfaces</generatePackage>
+							<generateDirectory>src/main/java</generateDirectory>
+							<strict>false</strict>
+							<extension>true</extension>
+							<plugins>
+								<plugin>
+									<groupId>org.jvnet.jaxb2_commons</groupId>
+									<artifactId>jaxb2-basics</artifactId>
+									<version>${jaxb2-basics.version}</version>
+								</plugin>
+								<plugin>
+									<groupId>org.jvnet.jaxb2_commons</groupId>
+									<artifactId>jaxb2-basics-annotate</artifactId>
+									<version>${jaxb2-basics.version}</version>
+								</plugin>
+							</plugins>
+							<args>
+								<arg>-Xannotate</arg>
+							</args>
+						</configuration>
+						<executions>
+							<execution>
+								<id>generate</id>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
+
+	<build>
+		<finalName>crm-service</finalName>	
+		<plugins>
+			<!-- Plugin de compilacao para Java 6 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<compilerVersion>1.6</compilerVersion>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

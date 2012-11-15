@@ -3,21 +3,28 @@ package br.com.alexandre.crm.service.error;
 import java.io.Serializable;
 import java.util.Date;
 
-public class CrmServiceExceptionInfo implements Serializable {
+public class CustomerServiceExceptionInfo implements Serializable {
 
 	private static final long serialVersionUID = -1879375130348669069L;
 
-	private String code;
+	private Integer code;
 	
 	private String message;
 
 	private Date date = new Date();
 	
-	public String getCode() {
+	public CustomerServiceExceptionInfo() { }
+	
+	public CustomerServiceExceptionInfo(final Integer code, final String message) {
+		this.code = code;
+		this.message = message;
+	}
+	
+	public Integer getCode() {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 

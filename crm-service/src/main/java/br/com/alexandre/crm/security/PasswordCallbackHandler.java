@@ -12,23 +12,25 @@ import org.springframework.stereotype.Component;
 import br.com.alexandre.crm.security.domain.User;
 import br.com.alexandre.crm.security.repository.UserRepository;
 
-@Component(value="passwordCallback")
-public class CrmServiceSecurityCallback implements CallbackHandler {
+@Component(value="passwordCallbackHandler")
+public class PasswordCallbackHandler implements CallbackHandler {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	public void handle(final Callback[] callbacks) throws IOException,
 	UnsupportedCallbackException {
-		for (Callback callback: callbacks) {
-			final WSPasswordCallback pc = (WSPasswordCallback) callback;
-			
-			final User user = userRepository.findByUsername(pc.getIdentifier());
-			
-			if (user != null) {
-				//Será comparado com o enviado
-				pc.setPassword(user.getPassword());
-			}			
+		if (callbacks != null) {
+			for (Callback callback: callbacks) {
+				final WSPasswordCallback pc = (WSPasswordCallback) callback;
+
+				final User user = userRepository.findByUsername(pc.getIdentifier());
+
+				if (user != null) {
+					//Será comparado com o enviado
+					pc.setPassword(user.getPassword());
+				}			
+			}
 		}
 	}
 
